@@ -1,15 +1,17 @@
 package com.zwb.ninelockscreen;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -29,7 +31,7 @@ public class NineLockScreenView extends View {
     private boolean init = false;//是否已经初始化了
     private Paint pointPaint;
     private Paint linePaint;
-    private int lineWidth = 10;//线宽
+    private float lineWidth = 10;//线宽
     private Path path;//线的路径
     private boolean isError;//密码是否错误--发生在手指抬起的时候
     private float moveX, moveY;//触摸点位置
@@ -37,12 +39,12 @@ public class NineLockScreenView extends View {
     private String password;
     private OnCallBack onCallBack;
 
+    private int normalColor;
+    private int selectedColor;
+    private int errorColor;
+
     public void setOnCallBack(OnCallBack onCallBack) {
         this.onCallBack = onCallBack;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -59,13 +61,37 @@ public class NineLockScreenView extends View {
 
     public NineLockScreenView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context, attrs, defStyleAttr);
     }
 
     /**
      * 初始化参数
      */
-    private void init() {
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        TypedArray array = context.getTheme().obtainStyledAttributes(attrs, R.styleable.NineLockScreenView, defStyleAttr, 0);
+        int n = array.getIndexCount();
+        for (int i = 0; i < n; i++) {
+            int attr = array.getIndex(i);
+            switch (attr) {
+                case R.styleable.NineLockScreenView_normal_color:
+                    normalColor = array.getColor(attr, Color.WHITE);
+                    break;
+                case R.styleable.NineLockScreenView_selected_color:
+                    selectedColor = array.getColor(attr, Color.GRAY);
+                    break;
+                case R.styleable.NineLockScreenView_error_color:
+                    errorColor = array.getColor(attr, Color.RED);
+                    break;
+                case R.styleable.NineLockScreenView_point_radius:
+                    radius = (int) array.getDimension(attr, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics()));
+                    break;
+                case R.styleable.NineLockScreenView_line_width:
+                    lineWidth = array.getDimension(attr, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+                    break;
+            }
+        }
+        array.recycle();
+
         pointPaint = new Paint();
         pointPaint.setDither(true);
         pointPaint.setStyle(Paint.Style.FILL);
@@ -130,9 +156,9 @@ public class NineLockScreenView extends View {
      */
     private void drawPath(Canvas canvas) {
         if (isError) {
-            linePaint.setColor(ContextCompat.getColor(getContext(), R.color.error));
+            linePaint.setColor(errorColor);
         } else {
-            linePaint.setColor(ContextCompat.getColor(getContext(), R.color.selected));
+            linePaint.setColor(selectedColor);
         }
         path.reset();
         for (int i = 0; i < selectedPoints.size(); i++) {
@@ -159,11 +185,11 @@ public class NineLockScreenView extends View {
         for (int i = 0; i < points.size(); i++) {
             Point point = points.get(i);
             if (point.getState() == Point.STATE.NORMAL) {
-                pointPaint.setColor(ContextCompat.getColor(getContext(), R.color.normal));
+                pointPaint.setColor(normalColor);
             } else if (point.getState() == Point.STATE.SELECTED) {
-                pointPaint.setColor(ContextCompat.getColor(getContext(), R.color.selected));
+                pointPaint.setColor(selectedColor);
             } else {
-                pointPaint.setColor(ContextCompat.getColor(getContext(), R.color.error));
+                pointPaint.setColor(errorColor);
             }
             canvas.drawCircle(point.getX(), point.getY(), point.getRadius(), pointPaint);
         }

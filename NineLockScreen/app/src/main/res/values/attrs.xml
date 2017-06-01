@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="normal_color" format="color" />
+    <attr name="selected_color" format="color" />
+    <attr name="error_color" format="color" />
+    <attr name="line_width" format="dimension" />
+    <attr name="point_radius" format="dimension" />
+
+    <declare-styleable name="NineLockScreenView">
+        <attr name="normal_color" />
+        <attr name="selected_color" />
+        <attr name="error_color" />
+        <attr name="line_width" />
+        <attr name="point_radius" />
+    </declare-styleable>
+</resources>

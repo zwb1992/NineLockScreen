@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:zwb="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,5 +38,10 @@
         android:layout_below="@id/tvPwdGet"
         android:layout_centerInParent="true"
         android:background="#110000ff"
-        android:padding="20dp" />
+        android:padding="20dp"
+        zwb:error_color="@color/error"
+        zwb:line_width="5dp"
+        zwb:normal_color="@color/normal"
+        zwb:point_radius="30dp"
+        zwb:selected_color="@color/selected" />
 </RelativeLayout>
