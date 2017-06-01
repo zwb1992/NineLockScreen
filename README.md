@@ -5,19 +5,20 @@
 
 
 ##说明
+
 先声明一个Point对象，里面有以下属性
 
-public class Point {
-	private float x;//x轴坐标
-    private float y;//y轴坐标
-    private int radius;//半径
-    private int num;//代表的数字--  0 - 8
-    private STATE state = STATE.NORMAL;//有三种状态，正常状态，触摸被选中状态，抬起手指密码错误状态
+	public class Point {
+		private float x;//x轴坐标
+		private float y;//y轴坐标
+		private int radius;//半径
+		private int num;//代表的数字--  0 - 8
+		private STATE state = STATE.NORMAL;//有三种状态，正常状态，触摸被选中状态，抬起手指密码错误状态
 
-    public enum STATE {
-        NORMAL, SELECTED, ERROR
-    }
-}
+		public enum STATE {
+			NORMAL, SELECTED, ERROR
+		}
+	}
 
 在自定义控件NineLockScreenView中先把3*3的9个圆点绘制出来，他们的x轴与y周坐标计算如下
 
@@ -82,7 +83,7 @@ public class Point {
         return true;
     }
 	
-	如果此时正在显示结果，则不响应事件，否则先判断move事件
+如果此时正在显示结果，则不响应事件，否则先判断move事件
 	
 	/**
      * 处理移动事件
@@ -115,7 +116,7 @@ public class Point {
         return null;
     }
 	
-	就是判断触摸点是否在先前绘制的9个圆点之上，如果在且之前没有被添加入被选中点的集合当中，设置点的状态为选中，且加入集合中，这时候刷新重新绘制
+就是判断触摸点是否在先前绘制的9个圆点之上，如果在且之前没有被添加入被选中点的集合当中，设置点的状态为选中，且加入集合中，这时候刷新重新绘制
 	
 	/**
      * 画线
@@ -144,9 +145,9 @@ public class Point {
         canvas.drawPath(path, linePaint);
     }
 	
-	依次把线连接之前的几个点，最后连接当前的触摸位置，如果没有点被选中，就不绘制
+依次把线连接之前的几个点，最后连接当前的触摸位置，如果没有点被选中，就不绘制
 	
-	然后手指抬起的时候判断选中点的集合所代表的密码，判断与设置的密码是否一致
+然后手指抬起的时候判断选中点的集合所代表的密码，判断与设置的密码是否一致
 	
 	/**
      * 处理结果
@@ -169,7 +170,7 @@ public class Point {
         }
     }
 	
-	然后延迟一秒钟发送消息，重置当前状态
+然后延迟一秒钟发送消息，重置当前状态
 	
 	 private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -193,5 +194,5 @@ public class Point {
         isError = false;
     }
 	
-	以上为总体思路！
+以上为总体思路！
 	
