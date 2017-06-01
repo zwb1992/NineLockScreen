@@ -6,7 +6,9 @@
 
 ##说明
 先声明一个Point对象，里面有以下属性
- private float x;//x轴坐标
+
+public class Point {
+	private float x;//x轴坐标
     private float y;//y轴坐标
     private int radius;//半径
     private int num;//代表的数字--  0 - 8
@@ -18,7 +20,13 @@
 }
 
 在自定义控件NineLockScreenView中先把3*3的9个圆点绘制出来，他们的x轴与y周坐标计算如下
- //初始化一个3*3的圆点
+
+	@Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (!init) {
+            init = true;
+			//初始化一个3*3的圆点
             float x;
             float y;
             for (int i = 0; i < 3; i++) {
@@ -41,8 +49,12 @@
                     points.add(point);
                 }
             }
+		}
+	}
+	
 初始化完成之后，加入到一个list集合当中，这是所有的点，然后监听onTouchEvent事件
- @Override
+
+	@Override
     public boolean onTouchEvent(MotionEvent event) {
         if (showingResult) {
             return false;
@@ -69,7 +81,9 @@
         invalidate();
         return true;
     }
+	
 	如果此时正在显示结果，则不响应事件，否则先判断move事件
+	
 	/**
      * 处理移动事件
      *
@@ -85,6 +99,7 @@
             selectedPoints.add(point);
         }
     }
+	
 	/**
      * 检测触摸点是否在圆内
      *
@@ -128,9 +143,11 @@
         }
         canvas.drawPath(path, linePaint);
     }
+	
 	依次把线连接之前的几个点，最后连接当前的触摸位置，如果没有点被选中，就不绘制
 	
 	然后手指抬起的时候判断选中点的集合所代表的密码，判断与设置的密码是否一致
+	
 	/**
      * 处理结果
      */
@@ -151,7 +168,9 @@
             onCallBack.result(builder.toString(), !isError);
         }
     }
+	
 	然后延迟一秒钟发送消息，重置当前状态
+	
 	 private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -160,6 +179,7 @@
             postInvalidate();
         }
     };
+	
 	/**
      * 初始化状态
      */
