@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -30,6 +33,16 @@ public class NineLockScreenView extends View {
     private Path path;//线的路径
     private boolean isError;//密码是否错误--发生在手指抬起的时候
     private float moveX, moveY;//触摸点位置
+    private boolean showingResult = false;//是否正在显示结果，这时候不处理触摸事件
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public NineLockScreenView(Context context) {
         this(context, null);
@@ -44,6 +57,9 @@ public class NineLockScreenView extends View {
         init();
     }
 
+    /**
+     * 初始化参数
+     */
     private void init() {
         pointPaint = new Paint();
         pointPaint.setDither(true);
@@ -150,23 +166,40 @@ public class NineLockScreenView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (showingResult) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.e("info", "--ACTION_DOWN---");
+                Log.e("info", "11111111111111");
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.e("info", "--ACTION_MOVE---");
                 handleAtMove(event);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                Log.e("info", "--ACTION_UP---");
-                reset();
+                //如果被选中的点不为空，触摸的x，y为最后一个点的位置
+                if (!selectedPoints.isEmpty()) {
+                    moveX = selectedPoints.get(selectedPoints.size() - 1).getX();
+                    moveY = selectedPoints.get(selectedPoints.size() - 1).getY();
+                    showingResult = true;
+                    handleResult();
+                    handler.sendEmptyMessageDelayed(1, 1000);
+                }
                 break;
         }
         invalidate();
         return true;
     }
+
+    private Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            reset();
+            postInvalidate();
+        }
+    };
 
     /**
      * 处理移动事件
@@ -208,5 +241,25 @@ public class NineLockScreenView extends View {
             point.setState(Point.STATE.NORMAL);
         }
         selectedPoints.clear();
+        showingResult = false;
+        isError = false;
+    }
+
+    /**
+     * 处理结果
+     */
+    private void handleResult() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < selectedPoints.size(); i++) {
+            builder.append(selectedPoints.get(i).getNum() + "");
+        }
+        //密码不正确
+        if (!builder.toString().equals(password)) {
+            for (int i = 0; i < selectedPoints.size(); i++) {
+                Point point = selectedPoints.get(i);
+                point.setState(Point.STATE.ERROR);
+                isError = true;
+            }
+        }
     }
 }
