@@ -35,6 +35,11 @@ public class NineLockScreenView extends View {
     private float moveX, moveY;//触摸点位置
     private boolean showingResult = false;//是否正在显示结果，这时候不处理触摸事件
     private String password;
+    private OnCallBack onCallBack;
+
+    public void setOnCallBack(OnCallBack onCallBack) {
+        this.onCallBack = onCallBack;
+    }
 
     public String getPassword() {
         return password;
@@ -261,5 +266,12 @@ public class NineLockScreenView extends View {
                 isError = true;
             }
         }
+        if (onCallBack != null) {
+            onCallBack.result(builder.toString(), !isError);
+        }
+    }
+
+    public interface OnCallBack {
+        void result(String password, boolean isRight);
     }
 }

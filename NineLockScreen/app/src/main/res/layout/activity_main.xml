@@ -7,10 +7,35 @@
     android:background="#facccccc"
     tools:context="com.zwb.ninelockscreen.MainActivity">
 
-    <com.zwb.ninelockscreen.NineLockScreenView
+    <TextView
+        android:id="@+id/tvPwdSet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPwdSet"
+        android:onClick="reset"
+        android:text="重置密码" />
+
+    <TextView
+        android:id="@+id/tvPwdGet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bt"
+        android:gravity="center"
+        android:padding="10dp" />
+
+    <com.zwb.ninelockscreen.NineLockScreenView
+        android:id="@+id/nlc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPwdGet"
         android:layout_centerInParent="true"
-        android:background="#f10000ff"
+        android:background="#110000ff"
         android:padding="20dp" />
 </RelativeLayout>
